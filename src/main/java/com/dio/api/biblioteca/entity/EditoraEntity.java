@@ -22,7 +22,4 @@ public class EditoraEntity {
 
     @Column(nullable = false, length = 100)
     public String nome;
-    
-    @OneToMany()
-    private List<LivroEntity> listaLivros;
 }
