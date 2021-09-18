@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+/**
+ * @author jaques oliveira
+ */
+
 @RestController()
 @RequestMapping("/api/v1/autores")
 public class AutorController {
@@ -46,4 +51,5 @@ public class AutorController {
         autorService.delete(id);
         return ResponseEntity.ok().build();
     }
+
 }
