@@ -36,8 +36,8 @@ public class AutorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AutorDTO> update(@RequestBody AutorDTO autorDTO, @PathVariable Long id) {
-        return autorService.save(autorDTO);
+    public ResponseEntity<AutorDTO> update(@RequestBody AutorDTO autorDTO, @PathVariable Long id) throws AutorNotFoundException {
+        return autorService.update(autorDTO, id);
     }
 
     @GetMapping("/{id}")
@@ -51,5 +51,4 @@ public class AutorController {
         autorService.delete(id);
         return ResponseEntity.ok().build();
     }
-
 }

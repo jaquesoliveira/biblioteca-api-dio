@@ -41,6 +41,18 @@ public class AutorService {
                 .orElseThrow(() -> new AutorNotFoundException(id));
         return ResponseEntity.ok(toDTO(entityFounded));
     }
+    public ResponseEntity<AutorDTO> update(AutorDTO autorDTO, Long id) throws AutorNotFoundException {
+        AutorEntity autorEntity = verifyIfExists(id);
+
+        AutorEntity autorEntityToUpdate = autorEntity.builder()
+            .id(id)
+            .nome(autorDTO.getNome())
+            .build();
+
+        AutorEntity autorEntityUpdated = autorRepository.save(autorEntityToUpdate);
+
+        return  ResponseEntity.ok(toDTO(autorEntityUpdated));
+    }
 
     public void delete(Long id) throws AutorNotFoundException {
         verifyIfExists(id);
