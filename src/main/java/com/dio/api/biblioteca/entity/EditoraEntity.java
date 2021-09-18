@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -20,4 +22,7 @@ public class EditoraEntity {
 
     @Column(nullable = false, length = 100)
     public String nome;
+    
+    @OneToMany()
+    private List<LivroEntity> listaLivros;
 }
