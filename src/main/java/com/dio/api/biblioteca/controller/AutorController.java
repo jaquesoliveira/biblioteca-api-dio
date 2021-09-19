@@ -50,6 +50,7 @@ public class AutorController {
         EntityModel<AutorDTO> entityModel = EntityModel.of(autorDTO);
         List<Link> lstLink = new ArrayList<Link>();
         lstLink.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(id)).withSelfRel());
+        lstLink.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).delete(id)).withSelfRel());
         entityModel.add(lstLink);
         return ResponseEntity.ok(entityModel);
     }
