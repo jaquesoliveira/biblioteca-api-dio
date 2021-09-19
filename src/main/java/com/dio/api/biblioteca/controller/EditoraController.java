@@ -4,6 +4,8 @@ package com.dio.api.biblioteca.controller;
 import com.dio.api.biblioteca.dto.EditoraDTO;
 import com.dio.api.biblioteca.exceptions.EditoraNotFoundException;
 import com.dio.api.biblioteca.service.EditoraService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,11 @@ public class EditoraController {
     @Autowired
     private EditoraService editoraService;
 
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retorna a lista de auotores"),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção"),
+    })
     @GetMapping("/")
     public ResponseEntity<List<EditoraDTO>> listAll() throws EditoraNotFoundException {
         List<EditoraDTO> listaEditoras = editoraService.findAll();

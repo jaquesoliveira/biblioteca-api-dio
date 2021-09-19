@@ -6,8 +6,12 @@ import java.util.List;
 import com.dio.api.biblioteca.dto.AutorDTO;
 import com.dio.api.biblioteca.dto.EditoraDTO;
 import com.dio.api.biblioteca.entity.AutorEntity;
+import com.dio.api.biblioteca.entity.EditoraEntity;
 import com.dio.api.biblioteca.exceptions.AutorNotFoundException;
 import com.dio.api.biblioteca.exceptions.EditoraNotFoundException;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -38,20 +42,14 @@ public class LivroController {
     @Autowired
     private LivroService livroService;
 
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retorna a lista de auotores"),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção"),
+    })
     @GetMapping("/")
     public ResponseEntity<List<LivroDTO>> listAll() throws LivroNotFoundException, EditoraNotFoundException, AutorNotFoundException {
-
         List<LivroDTO> listToReturn = livroService.findAll();
-
-        for(LivroDTO livroDTO : listToReturn){
-            livroDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LivroController.class).findById(livroDTO.getId())).withSelfRel());
-            livroDTO.getEditora().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EditoraController.class).findById(livroDTO.getEditora().getId())).withSelfRel());
-
-            for(AutorEntity autorEntity : livroDTO.getAutores()){
-                autorEntity.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(autorEntity.getId())).withSelfRel());
-            }
-        }
-
         return ResponseEntity.ok(listToReturn);
     }
 
