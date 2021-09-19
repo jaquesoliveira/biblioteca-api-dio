@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,8 +45,13 @@ public class AutorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AutorDTO> findById(@PathVariable Long id) throws AutorNotFoundException {
-        return autorService.findById(id);
+    public ResponseEntity<EntityModel<AutorDTO>> findById(@PathVariable Long id) throws AutorNotFoundException {
+        AutorDTO autorDTO = autorService.findById(id);
+        EntityModel<AutorDTO> entityModel = EntityModel.of(autorDTO);
+        List<Link> lstLink = new ArrayList<Link>();
+        lstLink.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(id)).withSelfRel());
+        entityModel.add(lstLink);
+        return ResponseEntity.ok(entityModel);
     }
 
     @DeleteMapping("/{id}")

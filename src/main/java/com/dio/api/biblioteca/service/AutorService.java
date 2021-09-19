@@ -36,11 +36,18 @@ public class AutorService {
         return ResponseEntity.ok(listToReturn);
     }
 
-    public ResponseEntity<AutorDTO> findById(Long id) throws AutorNotFoundException {
+//    public ResponseEntity<AutorDTO> findById(Long id) throws AutorNotFoundException {
+//        AutorEntity entityFounded = autorRepository.findById(id)
+//                .orElseThrow(() -> new AutorNotFoundException(id));
+//        return ResponseEntity.ok(toDTO(entityFounded));
+//    }
+
+    public AutorDTO findById(Long id) throws AutorNotFoundException {
         AutorEntity entityFounded = autorRepository.findById(id)
                 .orElseThrow(() -> new AutorNotFoundException(id));
-        return ResponseEntity.ok(toDTO(entityFounded));
+        return toDTO(entityFounded);
     }
+
     public ResponseEntity<AutorDTO> update(AutorDTO autorDTO, Long id) throws AutorNotFoundException {
         AutorEntity autorEntity = verifyIfExists(id);
 
