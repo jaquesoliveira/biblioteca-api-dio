@@ -21,7 +21,7 @@ public class LivroDTO  extends RepresentationModel<LivroDTO> {
 
     public String nome;
         
-    public EditoraDTO editora;
+    public EditoraEntity editora;
         
-    public List<AutorDTO> autores;
+    public List<AutorEntity> autores;
 }

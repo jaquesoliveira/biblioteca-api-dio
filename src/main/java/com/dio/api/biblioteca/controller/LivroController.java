@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.dio.api.biblioteca.dto.AutorDTO;
 import com.dio.api.biblioteca.dto.EditoraDTO;
+import com.dio.api.biblioteca.entity.AutorEntity;
 import com.dio.api.biblioteca.exceptions.AutorNotFoundException;
 import com.dio.api.biblioteca.exceptions.EditoraNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +47,8 @@ public class LivroController {
             livroDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LivroController.class).findById(livroDTO.getId())).withSelfRel());
             livroDTO.getEditora().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EditoraController.class).findById(livroDTO.getEditora().getId())).withSelfRel());
 
-            for(AutorDTO autorDTO : livroDTO.getAutores()){
-                autorDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(autorDTO.getId())).withSelfRel());
+            for(AutorEntity autorEntity : livroDTO.getAutores()){
+                autorEntity.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(autorEntity.getId())).withSelfRel());
             }
         }
 
@@ -56,7 +57,8 @@ public class LivroController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LivroDTO> insert(@RequestBody LivroDTO livroDTO) {
+    public ResponseEntity<LivroDTO> insert(@RequestBody LivroDTO livroDTO) throws EditoraNotFoundException {
+
         return livroService.save(livroDTO);
     }
 
@@ -71,8 +73,8 @@ public class LivroController {
         livroDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LivroController.class).listAll()).withRel("listAll"));
         livroDTO.getEditora().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EditoraController.class).findById(livroDTO.getEditora().getId())).withSelfRel());
 
-        for(AutorDTO autorDTO : livroDTO.getAutores()){
-            autorDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(autorDTO.getId())).withSelfRel());
+        for(AutorEntity autorEntity : livroDTO.getAutores()){
+            autorEntity.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(autorEntity.getId())).withSelfRel());
         }
         return ResponseEntity.ok(livroDTO);
     }

@@ -10,6 +10,7 @@ import com.dio.api.biblioteca.dto.AutorDTO;
 import com.dio.api.biblioteca.dto.EditoraDTO;
 import com.dio.api.biblioteca.entity.AutorEntity;
 import com.dio.api.biblioteca.entity.EditoraEntity;
+import com.dio.api.biblioteca.exceptions.EditoraNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,9 +32,9 @@ public class LivroService {
     @Autowired
     private EditoraService editoraService;
 
-    public ResponseEntity<LivroDTO> save(LivroDTO livroDTO) {
-        LivroEntity editoraEntity = toModel(livroDTO);
-        LivroEntity savedLivroEntity = livroRepository.save(editoraEntity);
+    public ResponseEntity<LivroDTO> save(LivroDTO livroDTO) throws EditoraNotFoundException {
+        LivroEntity livroEntity = toModel(livroDTO);
+        LivroEntity savedLivroEntity = livroRepository.save(livroEntity);
         LivroDTO returnedLivro = toDTO(savedLivroEntity);
         return ok(returnedLivro);
     }
@@ -59,8 +60,8 @@ public class LivroService {
         LivroEntity livroEntityToUpdate = livroEntity.builder()
             .id(id)
             .nome(livroDTO.getNome())
-            .listaAutorEntity( toEntityListAutor( livroDTO.getAutores()))
-            .editoraEntity(editoraService.toModel(livroDTO.getEditora()))
+            .listaAutorEntity( livroDTO.getAutores())
+            .editoraEntity(livroDTO.getEditora())
             .build();
 
         LivroEntity LivroEntityUpdated = livroRepository.save(livroEntityToUpdate);
@@ -76,8 +77,8 @@ public class LivroService {
     private LivroEntity toModel(LivroDTO livroDTO){
         return LivroEntity.builder()
                 .nome(livroDTO.getNome())
-                .listaAutorEntity(toEntityListAutor( livroDTO.getAutores()))
-                .editoraEntity(editoraService.toModel(livroDTO.getEditora()))
+                .listaAutorEntity(livroDTO.getAutores())
+                .editoraEntity(livroDTO.getEditora())
                 .build();
     }
 
@@ -85,8 +86,8 @@ public class LivroService {
         return LivroDTO.builder()
                 .nome(livroEntity.getNome())
                 .id(livroEntity.getId())
-                .autores(toDTOListAutor(livroEntity.getListaAutorEntity()))
-                .editora(editoraService.toDTO(livroEntity.getEditoraEntity()))
+                .autores(livroEntity.getListaAutorEntity())
+                .editora(livroEntity.getEditoraEntity())
                 .build();
     }
 
