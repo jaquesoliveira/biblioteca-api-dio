@@ -1,4 +1,4 @@
-package com.dio.api.biblioteca.dto;
+package com.dio.api.biblioteca.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AutorDTO extends RepresentationModel<AutorDTO> {
+public class AutorResponse extends RepresentationModel<AutorResponse>  {
 
     public Long id;
 

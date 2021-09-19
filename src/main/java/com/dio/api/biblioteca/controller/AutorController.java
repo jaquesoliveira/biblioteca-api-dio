@@ -1,19 +1,15 @@
 package com.dio.api.biblioteca.controller;
 
 
-import com.dio.api.biblioteca.entity.AutorEntity;
+import com.dio.api.biblioteca.dto.AutorDTO;
 import com.dio.api.biblioteca.exceptions.AutorNotFoundException;
 import com.dio.api.biblioteca.service.AutorService;
-import com.dio.api.biblioteca.dto.AutorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,8 +25,13 @@ public class AutorController {
     private AutorService autorService;
 
     @GetMapping("/")
-    public ResponseEntity<List<AutorDTO>> listAll() {
-        return  autorService.findAll();
+    public ResponseEntity<List<AutorDTO>> listAll() throws AutorNotFoundException {
+        List<AutorDTO> listaAutores = autorService.findAll();
+        for(AutorDTO autorDTO : listaAutores){
+           autorDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(autorDTO.getId())).withSelfRel()
+           );
+        }
+        return  ResponseEntity.ok(listaAutores);
     }
 
     @PostMapping("/")
@@ -45,14 +46,10 @@ public class AutorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<AutorDTO>> findById(@PathVariable Long id) throws AutorNotFoundException {
+    public ResponseEntity<AutorDTO> findById(@PathVariable Long id) throws AutorNotFoundException {
         AutorDTO autorDTO = autorService.findById(id);
-        EntityModel<AutorDTO> entityModel = EntityModel.of(autorDTO);
-        List<Link> lstLink = new ArrayList<Link>();
-        lstLink.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(id)).withSelfRel());
-        lstLink.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).delete(id)).withSelfRel());
-        entityModel.add(lstLink);
-        return ResponseEntity.ok(entityModel);
+        autorDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).listAll()).withRel("listAll"));
+        return ResponseEntity.ok(autorDTO);
     }
 
     @DeleteMapping("/{id}")

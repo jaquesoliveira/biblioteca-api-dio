@@ -3,7 +3,12 @@ package com.dio.api.biblioteca.controller;
 
 import java.util.List;
 
+import com.dio.api.biblioteca.dto.AutorDTO;
+import com.dio.api.biblioteca.dto.EditoraDTO;
+import com.dio.api.biblioteca.exceptions.AutorNotFoundException;
+import com.dio.api.biblioteca.exceptions.EditoraNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,8 +38,20 @@ public class LivroController {
     private LivroService livroService;
 
     @GetMapping("/")
-    public ResponseEntity<List<LivroDTO>> listAll() {
-        return  livroService.findAll();
+    public ResponseEntity<List<LivroDTO>> listAll() throws LivroNotFoundException, EditoraNotFoundException, AutorNotFoundException {
+
+        List<LivroDTO> listToReturn = livroService.findAll();
+
+        for(LivroDTO livroDTO : listToReturn){
+            livroDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LivroController.class).findById(livroDTO.getId())).withSelfRel());
+            livroDTO.getEditora().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EditoraController.class).findById(livroDTO.getEditora().getId())).withSelfRel());
+
+            for(AutorDTO autorDTO : livroDTO.getAutores()){
+                autorDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(autorDTO.getId())).withSelfRel());
+            }
+        }
+
+        return ResponseEntity.ok(listToReturn);
     }
 
     @PostMapping("/")
@@ -49,8 +66,15 @@ public class LivroController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LivroDTO> findById(@PathVariable Long id) throws LivroNotFoundException {
-        return livroService.findById(id);
+    public ResponseEntity<LivroDTO> findById(@PathVariable Long id) throws LivroNotFoundException, EditoraNotFoundException, AutorNotFoundException {
+        LivroDTO livroDTO = livroService.findById(id);
+        livroDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LivroController.class).listAll()).withRel("listAll"));
+        livroDTO.getEditora().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EditoraController.class).findById(livroDTO.getEditora().getId())).withSelfRel());
+
+        for(AutorDTO autorDTO : livroDTO.getAutores()){
+            autorDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutorController.class).findById(autorDTO.getId())).withSelfRel());
+        }
+        return ResponseEntity.ok(livroDTO);
     }
 
     @DeleteMapping("/{id}")

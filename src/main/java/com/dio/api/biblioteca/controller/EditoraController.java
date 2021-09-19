@@ -5,11 +5,13 @@ import com.dio.api.biblioteca.dto.EditoraDTO;
 import com.dio.api.biblioteca.exceptions.EditoraNotFoundException;
 import com.dio.api.biblioteca.service.EditoraService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -24,8 +26,13 @@ public class EditoraController {
     private EditoraService editoraService;
 
     @GetMapping("/")
-    public ResponseEntity<List<EditoraDTO>> listAll() {
-        return  editoraService.findAll();
+    public ResponseEntity<List<EditoraDTO>> listAll() throws EditoraNotFoundException {
+        List<EditoraDTO> listaEditoras = editoraService.findAll();
+
+        for(EditoraDTO editoraDTO : listaEditoras){
+            editoraDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EditoraController.class).findById(editoraDTO.getId())).withSelfRel());
+        }
+        return  ResponseEntity.ok(listaEditoras);
     }
 
     @PostMapping("/")
@@ -41,7 +48,9 @@ public class EditoraController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EditoraDTO> findById(@PathVariable Long id) throws EditoraNotFoundException {
-        return editoraService.findById(id);
+        EditoraDTO editoraDTO = editoraService.findById(id);
+        editoraDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EditoraController.class).listAll()).withRel("listAll"));
+        return ResponseEntity.ok(editoraDTO);
     }
 
     @DeleteMapping("/{id}")
