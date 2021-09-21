@@ -1,9 +1,11 @@
 package com.dio.api.biblioteca.entity;
 
+import com.dio.api.biblioteca.dto.LivroDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 
@@ -12,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AutorEntity {
+public class AutorEntity  extends RepresentationModel<AutorEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

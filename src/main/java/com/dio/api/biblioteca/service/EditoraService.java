@@ -27,20 +27,20 @@ public class EditoraService {
         return ok(returnedEditora);
     }
 
-    public ResponseEntity<List<EditoraDTO>> findAll(){
+    public List<EditoraDTO> findAll(){
         List<EditoraEntity> listAll = editoraRepository.findAll();
 
         List<EditoraDTO> listToReturn = listAll.stream()
                 .map(item -> toDTO(item))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(listToReturn);
+        return listToReturn;
     }
 
-    public ResponseEntity<EditoraDTO> findById(Long id) throws EditoraNotFoundException {
+    public EditoraDTO findById(Long id) throws EditoraNotFoundException {
         EditoraEntity entityFounded = editoraRepository.findById(id)
                 .orElseThrow(() -> new EditoraNotFoundException(id));
-        return ResponseEntity.ok(toDTO(entityFounded));
+        return toDTO(entityFounded);
     }
     public ResponseEntity<EditoraDTO> update(EditoraDTO EditoraDTO, Long id) throws EditoraNotFoundException {
         EditoraEntity EditoraEntity = verifyIfExists(id);
@@ -60,13 +60,13 @@ public class EditoraService {
         editoraRepository.deleteById(id);
     }
 
-    private EditoraEntity toModel(EditoraDTO EditoraDTO){
+    public EditoraEntity toModel(EditoraDTO EditoraDTO){
         return EditoraEntity.builder()
                 .nome(EditoraDTO.getNome())
                 .build();
     }
 
-    private EditoraDTO toDTO(EditoraEntity EditoraEntity){
+    public EditoraDTO toDTO(EditoraEntity EditoraEntity){
         return EditoraDTO.builder()
                 .nome(EditoraEntity.getNome())
                 .id(EditoraEntity.getId())

@@ -4,12 +4,16 @@ package com.dio.api.biblioteca.controller;
 import com.dio.api.biblioteca.dto.EditoraDTO;
 import com.dio.api.biblioteca.exceptions.EditoraNotFoundException;
 import com.dio.api.biblioteca.service.EditoraService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -23,9 +27,19 @@ public class EditoraController {
     @Autowired
     private EditoraService editoraService;
 
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retorna a lista de auotores"),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção"),
+    })
     @GetMapping("/")
-    public ResponseEntity<List<EditoraDTO>> listAll() {
-        return  editoraService.findAll();
+    public ResponseEntity<List<EditoraDTO>> listAll() throws EditoraNotFoundException {
+        List<EditoraDTO> listaEditoras = editoraService.findAll();
+
+        for(EditoraDTO editoraDTO : listaEditoras){
+            editoraDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EditoraController.class).findById(editoraDTO.getId())).withSelfRel());
+        }
+        return  ResponseEntity.ok(listaEditoras);
     }
 
     @PostMapping("/")
@@ -41,7 +55,9 @@ public class EditoraController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EditoraDTO> findById(@PathVariable Long id) throws EditoraNotFoundException {
-        return editoraService.findById(id);
+        EditoraDTO editoraDTO = editoraService.findById(id);
+        editoraDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EditoraController.class).listAll()).withRel("listAll"));
+        return ResponseEntity.ok(editoraDTO);
     }
 
     @DeleteMapping("/{id}")

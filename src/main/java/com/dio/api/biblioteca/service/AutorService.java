@@ -26,21 +26,28 @@ public class AutorService {
         return ok(returnedAutor);
     }
 
-    public ResponseEntity<List<AutorDTO>> findAll(){
+    public List<AutorDTO> findAll(){
         List<AutorEntity> listAll = autorRepository.findAll();
 
         List<AutorDTO> listToReturn = listAll.stream()
                 .map(item -> toDTO(item))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(listToReturn);
+        return listToReturn;
     }
 
-    public ResponseEntity<AutorDTO> findById(Long id) throws AutorNotFoundException {
+//    public ResponseEntity<AutorDTO> findById(Long id) throws AutorNotFoundException {
+//        AutorEntity entityFounded = autorRepository.findById(id)
+//                .orElseThrow(() -> new AutorNotFoundException(id));
+//        return ResponseEntity.ok(toDTO(entityFounded));
+//    }
+
+    public AutorDTO findById(Long id) throws AutorNotFoundException {
         AutorEntity entityFounded = autorRepository.findById(id)
                 .orElseThrow(() -> new AutorNotFoundException(id));
-        return ResponseEntity.ok(toDTO(entityFounded));
+        return toDTO(entityFounded);
     }
+
     public ResponseEntity<AutorDTO> update(AutorDTO autorDTO, Long id) throws AutorNotFoundException {
         AutorEntity autorEntity = verifyIfExists(id);
 
@@ -59,13 +66,13 @@ public class AutorService {
         autorRepository.deleteById(id);
     }
 
-    private AutorEntity toModel(AutorDTO autorDTO){
+    public AutorEntity toModel(AutorDTO autorDTO){
         return AutorEntity.builder()
                 .nome(autorDTO.getNome())
                 .build();
     }
 
-    private AutorDTO toDTO(AutorEntity autorEntity){
+    public AutorDTO toDTO(AutorEntity autorEntity){
         return AutorDTO.builder()
                 .nome(autorEntity.getNome())
                 .id(autorEntity.getId())

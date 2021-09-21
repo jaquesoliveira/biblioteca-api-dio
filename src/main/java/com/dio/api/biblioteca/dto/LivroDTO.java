@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
@@ -14,13 +15,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LivroDTO {
+public class LivroDTO  extends RepresentationModel<LivroDTO> {
 
     public Long id;
 
     public String nome;
         
-    public EditoraEntity editoraEntity;
+    public EditoraEntity editora;
         
-    public List<AutorEntity> listaAutorEntity;
+    public List<AutorEntity> autores;
 }
