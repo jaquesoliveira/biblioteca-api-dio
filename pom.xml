@@ -95,7 +95,11 @@
 			<version>2.5.4</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>com.herokuPostgresConnection</groupId>
+			<artifactId>HerokuPostgresConnection</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 	</dependencies>
 
@@ -115,5 +119,10 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<repositories>
+		<repository>
+			<id>lib</id>
+			<url>file://${project.basedir}/../repositorio-local</url>
+		</repository>		
+	</repositories>
 </project>

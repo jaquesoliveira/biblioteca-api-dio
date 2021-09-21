@@ -1,13 +1,16 @@
 package com.dio.api.biblioteca.config;
 
-import conn.HerokuPostgresConnection;
-import lombok.Getter;
+
+import javax.sql.DataSource;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.sql.DataSource;
+import com.heroku.postgres.connection.HerokuPostgresConnection;
+
+import lombok.Getter;
 
 @Getter
 @Configuration
