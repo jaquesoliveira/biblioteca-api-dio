@@ -48,7 +48,7 @@ public class LivroController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção"),
     })
-    @CrossOrigin(origins = "http://localhost:8080")
+    @CrossOrigin(origins = "http://131.221.226.75:8080")
     @GetMapping("/")
     public ResponseEntity<List<LivroDTO>> listAll() throws LivroNotFoundException, EditoraNotFoundException, AutorNotFoundException {
         List<LivroDTO> listToReturn = livroService.findAll();
